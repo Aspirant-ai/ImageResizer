@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelPerfect Resizer - Advanced Image Processing Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-crop-alt"></i> PixelPerfect Resizer</h1>
+            <p>Advanced image resizing and optimization tool</p>
+        </header>
+
+        <div class="upload-container">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag & drop your image here or</p>
+                <button id="selectFileBtn">Select File</button>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+            </div>
+        </div>
+
+        <div class="editor-container" id="editorContainer" style="display: none;">
+            <div class="preview-container">
+                <h3>Preview</h3>
+                <div class="image-preview">
+                    <img id="previewImage" src="" alt="Preview">
+                    <div class="image-info">
+                        <p>Original: <span id="originalSize"></span></p>
+                        <p>New: <span id="newSize"></span></p>
+                        <p>File Size: <span id="fileSize"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-container">
+                <div class="control-group">
+                    <h3>Resize Options</h3>
+                    <div class="resize-tabs">
+                        <button class="tab-btn active" data-tab="custom">Custom Size</button>
+                        <button class="tab-btn" data-tab="preset">Preset Sizes</button>
+                    </div>
+                    
+                    <div class="tab-content" id="custom-tab">
+                        <div class="input-group-with-unit">
+                            <label for="widthInput">Width:</label>
+                            <div class="input-unit-wrapper">
+                                <input type="number" id="widthInput" min="1" placeholder="Width" class="size-input">
+                                <select class="unit-selector" id="widthUnit">
+                                    <option value="px">px</option>
+                                    <option value="cm">cm</option>
+                                    <option value="inch">inch</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group-with-unit">
+                            <label for="heightInput">Height:</label>
+                            <div class="input-unit-wrapper">
+                                <input type="number" id="heightInput" min="1" placeholder="Height" class="size-input">
+                                <select class="unit-selector" id="heightUnit">
+                                    <option value="px">px</option>
+                                    <option value="cm">cm</option>
+                                    <option value="inch">inch</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="maintainAspectRatio" checked>
+                            <label for="maintainAspectRatio">Maintain aspect ratio</label>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="preset-tab" style="display: none;">
+                        <div class="preset-buttons">
+                            <button data-width="1920" data-height="1080">Full HD (1920×1080)</button>
+                            <button data-width="1280" data-height="720">HD (1280×720)</button>
+                            <button data-width="800" data-height="600">Medium (800×600)</button>
+                            <button data-width="400" data-height="300">Small (400×300)</button>
+                            <button data-width="150" data-height="150">Thumbnail (150×150)</button>
+                            <button data-width="1080" data-height="1080">Instagram (1080×1080)</button>
+                            <button data-width="1200" data-height="628">Facebook Cover (1200×628)</button>
+                            <button data-width="1500" data-height="500">Twitter Header (1500×500)</button>
+                            <button data-width="2560" data-height="1440">2K (2560×1440)</button>
+                            <button data-width="3840" data-height="2160">4K (3840×2160)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Output Settings</h3>
+                    <div class="output-settings">
+                        <div class="format-section">
+                            <label for="formatSelect">Format:</label>
+                            <select id="formatSelect">
+                                <option value="jpeg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="gif">GIF</option>
+                            </select>
+                        </div>
+                        
+                        <div class="quality-section">
+                            <label for="qualitySlider">Quality:</label>
+                            <div class="slider-container">
+                                <input type="range" id="qualitySlider" min="1" max="100" value="90">
+                                <span id="qualityValue">90%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <button id="advancedOptionsBtn" class="toggle-btn">
+                        <i class="fas fa-cog"></i> Advanced Options
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    
+                    <div id="advancedOptions" class="advanced-options" style="display: none;">
+                        <div class="advanced-section">
+                            <h4>Crop Options</h4>
+                            <div class="crop-controls">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="enableCrop">
+                                    <label for="enableCrop">Enable Cropping</label>
+                                </div>
+                                <div class="crop-dimensions" style="display: none;">
+                                    <div class="input-group">
+                                        <label for="cropX">X Position:</label>
+                                        <input type="number" id="cropX" min="0" value="0">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="cropY">Y Position:</label>
+                                        <input type="number" id="cropY" min="0" value="0">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="cropWidth">Width:</label>
+                                        <input type="number" id="cropWidth" min="1">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="cropHeight">Height:</label>
+                                        <input type="number" id="cropHeight" min="1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="advanced-section">
+                            <h4>Background Removal</h4>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="removeBackground">
+                                <label for="removeBackground">Remove Background</label>
+                            </div>
+                            <p class="feature-note">Note: Background removal works best with PNG output format</p>
+                        </div>
+                        
+                        <div class="advanced-section">
+                            <h4>AI Enhancement <span class="coming-soon">(Coming Soon)</span></h4>
+                            <div class="ai-options">
+                                <div class="checkbox-group disabled">
+                                    <input type="checkbox" id="aiEnhance" disabled>
+                                    <label for="aiEnhance">AI Image Enhancement</label>
+                                </div>
+                                <div class="checkbox-group disabled">
+                                    <input type="checkbox" id="aiUpscale" disabled>
+                                    <label for="aiUpscale">AI Upscaling</label>
+                                </div>
+                                <div class="checkbox-group disabled">
+                                    <input type="checkbox" id="aiNoise" disabled>
+                                    <label for="aiNoise">Noise Reduction</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="processBtn" class="primary-btn">Process Image</button>
+                    <button id="downloadBtn" class="secondary-btn" disabled>Download</button>
+                    <button id="resetBtn" class="tertiary-btn">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-guide" id="userGuide">
+            <h2>User Guide</h2>
+            <div class="guide-content">
+                <div class="guide-section">
+                    <h3><i class="fas fa-upload"></i> Uploading Images</h3>
+                    <p>Drag and drop your image onto the upload area or click "Select File" to choose an image from your device. Supported formats include JPEG, PNG, GIF, and WebP.</p>
+                </div>
+                <div class="guide-section">
+                    <h3><i class="fas fa-crop"></i> Resizing Images</h3>
+                    <p>Enter your desired width and height in px. Check "Maintain aspect ratio" to prevent image distortion. You can also use preset sizes for common dimensions.</p>
+                </div>
+                <div class="guide-section">
+                    <h3><i class="fas fa-file-image"></i> Output Options</h3>
+                    <p>Select your preferred output format from the dropdown menu. Adjust the quality slider to balance between file size and image quality.</p>
+                </div>
+                <div class="guide-section">
+                    <h3><i class="fas fa-download"></i> Downloading</h3>
+                    <p>After processing your image, click the "Download" button to save the resized image to your device.</p>
+                </div>
+                <div class="guide-section">
+                    <h3><i class="fas fa-robot"></i> AI Enhancement (Coming Soon)</h3>
+                    <p>Future updates will include AI-powered features like image enhancement, upscaling, and noise reduction for even better results.</p>
+                </div>
+            </div>
+            <button id="closeGuideBtn" class="tertiary-btn">Close Guide</button>
+        </div>
+
+        <footer>
+            <p>&copy; 2023 PixelPerfect Resizer | <a href="#" id="showGuideBtn">User Guide</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
