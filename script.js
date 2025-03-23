@@ -481,42 +481,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 
-    function downloadImage() {
-        if (!processedBlob) return;
-        showLoading(true);
-        
-        // Create a canvas to apply the current transformations
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Get current state from the latest history entry
-        const currentState = imageHistory[historyIndex];
-        const newWidth = currentState.width;
-        const newHeight = currentState.height;
-        
-        // Set canvas dimensions based on rotation
-        if (Math.abs(rotationAngle) === 90 || Math.abs(rotationAngle) === 270) {
-            canvas.width = newHeight;
-            canvas.height = newWidth;
-        } else {
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-        }
-        
-        // Apply transformations
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate((rotationAngle * Math.PI) / 180);
-        
-        // Handle flips
-        if (flipHorizontal || flipVertical) {
-            ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
-        }
-        
-        // Create a temporary image from the current preview
-        const img = new Image();
-        img.src = previewImage.src;
-        
+function downloadImage() {
+    if (!processedBlob) return;
+    showLoading(true);
+    
+    // Create a canvas to apply the current transformations
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Get current state from the latest history entry
+    const currentState = imageHistory[historyIndex];
+    const newWidth = currentState.width;
+    const newHeight = currentState.height;
+    
+    // Set canvas dimensions based on rotation
+    if (Math.abs(rotationAngle) === 90 || Math.abs(rotationAngle) === 270) {
+        canvas.width = newHeight;
+        canvas.height = newWidth;
+    } else {
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+    }
+    
+    // Apply transformations
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate((rotationAngle * Math.PI) / 180);
+    
+    // Handle flips
+    if (flipHorizontal || flipVertical) {
+        ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
+    }
+    
+    // Create a temporary image from the current preview
+    const img = new Image();
+    img.src = previewImage.src;
+    img.onload = function() {
         // Draw the image with all transformations
         ctx.drawImage(
             img,
@@ -549,7 +549,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show success message
             showMessage('Image downloaded successfully!', 'success');
         }, mimeType, quality);
-    }
+    };
+}
 
     function undo() {
         if (historyIndex > 0) {
@@ -657,20 +658,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function resetEditor() {
-        if (confirm('Are you sure you want to reset? This will clear your current image.')) {
-            editorContainer.style.display = 'none';
-            uploadArea.style.display = 'block';
-            previewImage.src = '';
-            fileInput.value = '';
-            originalImage = null;
-            processedBlob = null;
-            downloadBtn.disabled = true;
-            imageHistory = [];
-            historyIndex = 0;
-            updateUndoRedoState();
-        }
+function updateUndoRedoState() {
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    undoBtn.disabled = historyIndex <= 0;
+    redoBtn.disabled = historyIndex >= imageHistory.length - 1;
+    undoBtn.classList.toggle("disabled", historyIndex <= 0);
+    redoBtn.classList.toggle("disabled", historyIndex >= imageHistory.length - 1);
+}
+
+function resetEditor() {
+    if (confirm('Are you sure you want to reset? This will clear your current image.')) {
+        editorContainer.style.display = 'none';
+        uploadArea.style.display = 'block';
+        previewImage.src = '';
+        fileInput.value = '';
+        originalImage = null;
+        processedBlob = null;
+        downloadBtn.disabled = true;
+        imageHistory = [];
+        historyIndex = 0;
+        updateUndoRedoState();
     }
+}
 
     function showLoading(show) {
         loadingIndicator.style.display = show ? 'flex' : 'none';
