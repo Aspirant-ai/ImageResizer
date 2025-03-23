@@ -494,8 +494,8 @@ function downloadImage() {
     const newWidth = currentState.width;
     const newHeight = currentState.height;
     
-    // Set canvas dimensions based on rotation
-    if (Math.abs(rotationAngle) === 90 || Math.abs(rotationAngle) === 270) {
+    // Set canvas dimensions based on rotation from current state
+    if (Math.abs(currentState.rotation) === 90 || Math.abs(currentState.rotation) === 270) {
         canvas.width = newHeight;
         canvas.height = newWidth;
     } else {
@@ -506,11 +506,11 @@ function downloadImage() {
     // Apply transformations
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate((rotationAngle * Math.PI) / 180);
+    ctx.rotate((currentState.rotation * Math.PI) / 180);
     
     // Handle flips
-    if (flipHorizontal || flipVertical) {
-        ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
+    if (currentState.flipX || currentState.flipY) {
+        ctx.scale(currentState.flipX ? -1 : 1, currentState.flipY ? -1 : 1);
     }
     
     // Create a temporary image from the current preview
