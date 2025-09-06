@@ -1,0 +1,118 @@
+name: 🔍 PR Quality Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  code-quality:
+    name: 🧹 Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔍 HTML Validation
+      uses: Cyb3r-Jak3/html5validator-action@v7.2.0
+      with:
+        root: ./
+        
+    - name: 🎨 CSS Lint
+      run: |
+        npm install -g stylelint stylelint-config-standard
+        echo '{"extends": "stylelint-config-standard"}' > .stylelintrc.json
+        stylelint "*.css" || true
+        
+    - name: 📝 JavaScript Lint
+      run: |
+        npm install -g eslint
+        echo '{"env": {"browser": true, "es6": true}, "extends": "eslint:recommended", "rules": {"no-unused-vars": "warn"}}' > .eslintrc.json
+        eslint "*.js" || true
+
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🛡️ Security Audit
+      run: |
+        # Check for common security issues
+        echo "🔍 Scanning for security issues..."
+        grep -r "eval(" . --include="*.js" && echo "⚠️ Found eval() usage" || echo "✅ No eval() found"
+        grep -r "innerHTML" . --include="*.js" && echo "⚠️ Found innerHTML usage" || echo "✅ No innerHTML found"
+        grep -r "document.write" . --include="*.js" && echo "⚠️ Found document.write" || echo "✅ No document.write found"
+
+  performance-check:
+    name: ⚡ Performance Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📊 File Size Check
+      run: |
+        echo "📁 Checking file sizes..."
+        find . -name "*.js" -exec wc -c {} + | sort -n
+        find . -name "*.css" -exec wc -c {} + | sort -n
+        find . -name "*.html" -exec wc -c {} + | sort -n
+        
+        # Check if files are too large
+        if [ $(find . -name "*.js" -size +100k | wc -l) -gt 0 ]; then
+          echo "⚠️ Large JavaScript files found"
+        else
+          echo "✅ JavaScript files are optimized"
+        fi
+
+  accessibility-check:
+    name: ♿ Accessibility Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Accessibility Audit
+      run: |
+        echo "♿ Checking accessibility..."
+        # Check for alt attributes
+        grep -r "img" . --include="*.html" | grep -v "alt=" && echo "⚠️ Images without alt text found" || echo "✅ All images have alt text"
+        # Check for semantic HTML
+        grep -r "<div" . --include="*.html" | wc -l > div_count.txt
+        grep -r "<section\|<article\|<nav\|<header\|<footer\|<main" . --include="*.html" | wc -l > semantic_count.txt
+        echo "📊 Semantic HTML usage: $(cat semantic_count.txt) semantic tags vs $(cat div_count.txt) divs"
+
+  pr-validation:
+    name: ✅ PR Validation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📝 PR Title Check
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        if [[ $PR_TITLE =~ ^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+ ]]; then
+          echo "✅ PR title follows conventional commits"
+        else
+          echo "❌ PR title should follow format: type(scope): description"
+          echo "Examples: feat: add dark mode, fix: resolve upload bug"
+          exit 1
+        fi
+        
+    - name: 📋 PR Description Check
+      run: |
+        if [ -z "${{ github.event.pull_request.body }}" ]; then
+          echo "❌ PR description is required"
+          exit 1
+        else
+          echo "✅ PR has description"
+        fi

@@ -31,14 +31,6 @@
 
 **Try it now:** [https://img.sscgram.com](https://img.sscgram.com)
 
-## 📱 Screenshots
-
-### Desktop View
-![Desktop Screenshot](https://via.placeholder.com/800x500/667eea/ffffff?text=Desktop+View)
-
-### Mobile View
-![Mobile Screenshot](https://via.placeholder.com/400x600/764ba2/ffffff?text=Mobile+View)
-
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML5, CSS3, JavaScript (ES6+)
