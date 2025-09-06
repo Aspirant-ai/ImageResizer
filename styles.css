@@ -73,6 +73,54 @@ body {
     animation: gradientShift 15s ease infinite;
 }
 
+/*.brand-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-link img {
+  margin-right: 8px;
+}*/
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-light);
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.brand-link:hover {
+  opacity: 0.85;
+}
+
+.brand-link img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .brand-link {
+    font-size: 1rem;
+    gap: 6px;
+  }
+
+  .brand-link img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+
+
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -175,6 +223,7 @@ body {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--text-light);
+    transition: var(--transition-fast);
 }
 
 .nav-brand i {
@@ -182,6 +231,13 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-size: 1.3rem;
+}
+
+.nav-brand span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Glass Components */
@@ -1101,6 +1157,14 @@ body {
         padding: 80px var(--spacing-sm) var(--spacing-lg);
     }
     
+    .nav-brand {
+        font-size: 1.3rem;
+    }
+    
+    .nav-brand span {
+        max-width: 150px;
+    }
+    
     .hero-title {
         font-size: 2.5rem;
     }
@@ -1265,6 +1329,25 @@ body {
 @media (max-width: 480px) {
     .hero-title {
         font-size: 1.8rem;
+    }
+    
+    .nav-brand {
+        font-size: 1rem;
+        gap: 4px;
+    }
+    
+    .nav-brand span {
+        max-width: 100px;
+        font-size: 0.9rem;
+    }
+    
+    .nav-brand i {
+        font-size: 1rem;
+    }
+    
+    .nav-controls .glass-btn {
+        padding: 6px 8px;
+        font-size: 0.8rem;
     }
     
     .section-title {
