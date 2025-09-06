@@ -782,6 +782,216 @@ body {
     font-weight: 600;
 }
 
+/* Advanced Editing Styles */
+.advanced-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.advanced-section {
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+}
+
+.advanced-section h4 {
+    color: var(--text-light);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 1rem;
+}
+
+.advanced-section h4 i {
+    background: var(--primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Crop Controls */
+.crop-presets {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.crop-btn, .crop-preset {
+    flex: 1;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+}
+
+.crop-btn.active {
+    background: var(--success);
+    color: white;
+}
+
+/* Background Removal */
+.bg-colors {
+    margin-top: var(--spacing-sm);
+}
+
+.bg-color-label {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    margin-bottom: var(--spacing-xs);
+    display: block;
+}
+
+.color-palette {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.color-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--glass-border);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+    border-color: var(--text-light);
+}
+
+.color-picker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+}
+
+/* Filter Controls */
+.filter-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.filter-group label {
+    min-width: 80px;
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.filter-group .glass-slider {
+    flex: 1;
+    margin: 0;
+}
+
+.filter-group span {
+    min-width: 40px;
+    color: var(--text-light);
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.filter-presets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.filter-preset {
+    padding: var(--spacing-xs);
+    font-size: 0.8rem;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* AI Features (Coming Soon) */
+.coming-soon-section {
+    position: relative;
+    opacity: 0.7;
+}
+
+.coming-soon-badge {
+    background: var(--warning);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: var(--spacing-xs);
+}
+
+.ai-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xs);
+}
+
+.ai-btn {
+    padding: var(--spacing-sm);
+    font-size: 0.8rem;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0.5;
+}
+
+.coming-soon-text {
+    color: var(--text-light);
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: var(--spacing-sm);
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Crop Canvas Overlay */
+.crop-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 10;
+}
+
+.crop-overlay.active {
+    display: block;
+}
+
+.crop-selection {
+    position: absolute;
+    border: 2px dashed var(--text-light);
+    background: transparent;
+    cursor: move;
+}
+
+.crop-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--text-light);
+    border: 1px solid var(--primary);
+    cursor: nw-resize;
+}
+
+.crop-handle.nw { top: -5px; left: -5px; }
+.crop-handle.ne { top: -5px; right: -5px; cursor: ne-resize; }
+.crop-handle.sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+.crop-handle.se { bottom: -5px; right: -5px; cursor: se-resize; }
+
 /* Features Section */
 .features-section,
 .how-it-works-section {
@@ -1149,6 +1359,14 @@ body {
     
     .features-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .ai-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-presets {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

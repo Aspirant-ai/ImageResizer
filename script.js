@@ -29,6 +29,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Advanced editing elements
+    const enableCropBtn = document.getElementById('enableCrop');
+    const removeBackgroundBtn = document.getElementById('removeBackground');
+    const replaceBackgroundBtn = document.getElementById('replaceBackground');
+    const backgroundInput = document.getElementById('backgroundInput');
+    const colorBtns = document.querySelectorAll('.color-btn');
+    const customColor = document.getElementById('customColor');
+    const brightnessSlider = document.getElementById('brightness');
+    const contrastSlider = document.getElementById('contrast');
+    const saturationSlider = document.getElementById('saturation');
+    const blurSlider = document.getElementById('blur');
+    const filterPresets = document.querySelectorAll('.filter-preset');
 
     // Add loading indicator
     const loadingIndicator = document.createElement('div');
@@ -59,6 +72,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let rotationAngle = 0;
     let flipHorizontalState = false;
     let flipVerticalState = false;
+    let cropEnabled = false;
+    let currentFilters = {
+        brightness: 100,
+        contrast: 100,
+        saturation: 100,
+        blur: 0
+    };
+    let backgroundImage = null;
 
     // Utility Functions
     function showNotification(message, type = 'info') {
@@ -240,6 +261,98 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification('Flipped vertically', 'success');
         });
     }
+
+    // Advanced editing event listeners
+    if (enableCropBtn) {
+        enableCropBtn.addEventListener('click', () => {
+            cropEnabled = !cropEnabled;
+            enableCropBtn.classList.toggle('active');
+            if (cropEnabled) {
+                showNotification('Crop mode enabled - Click and drag on image', 'info');
+                enableCropBtn.innerHTML = '<i class="fas fa-times"></i> Disable Crop';
+            } else {
+                showNotification('Crop mode disabled', 'info');
+                enableCropBtn.innerHTML = '<i class="fas fa-crop-alt"></i> Enable Crop';
+            }
+        });
+    }
+
+    if (removeBackgroundBtn) {
+        removeBackgroundBtn.addEventListener('click', () => {
+            if (!originalImage) {
+                showNotification('Please upload an image first', 'error');
+                return;
+            }
+            removeBackground();
+        });
+    }
+
+    if (replaceBackgroundBtn) {
+        replaceBackgroundBtn.addEventListener('click', () => {
+            backgroundInput.click();
+        });
+    }
+
+    if (backgroundInput) {
+        backgroundInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                loadBackgroundImage(e.target.files[0]);
+            }
+        });
+    }
+
+    colorBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const color = btn.getAttribute('data-color');
+            replaceBackgroundWithColor(color);
+        });
+    });
+
+    if (customColor) {
+        customColor.addEventListener('change', (e) => {
+            replaceBackgroundWithColor(e.target.value);
+        });
+    }
+
+    // Filter controls
+    if (brightnessSlider) {
+        brightnessSlider.addEventListener('input', () => {
+            currentFilters.brightness = brightnessSlider.value;
+            document.getElementById('brightnessValue').textContent = brightnessSlider.value + '%';
+            applyFilters();
+        });
+    }
+
+    if (contrastSlider) {
+        contrastSlider.addEventListener('input', () => {
+            currentFilters.contrast = contrastSlider.value;
+            document.getElementById('contrastValue').textContent = contrastSlider.value + '%';
+            applyFilters();
+        });
+    }
+
+    if (saturationSlider) {
+        saturationSlider.addEventListener('input', () => {
+            currentFilters.saturation = saturationSlider.value;
+            document.getElementById('saturationValue').textContent = saturationSlider.value + '%';
+            applyFilters();
+        });
+    }
+
+    if (blurSlider) {
+        blurSlider.addEventListener('input', () => {
+            currentFilters.blur = blurSlider.value;
+            document.getElementById('blurValue').textContent = blurSlider.value + 'px';
+            applyFilters();
+        });
+    }
+
+    filterPresets.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filter = btn.getAttribute('data-filter');
+            applyFilterPreset(filter);
+        });
+    });
 
     // Dark mode toggle
     if (darkModeToggle) {
@@ -505,13 +618,168 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('Image downloaded successfully', 'success');
     }
 
+    // Advanced editing functions
+    function removeBackground() {
+        if (!originalImage) return;
+        
+        showLoading();
+        showNotification('Removing background...', 'info');
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+        
+        ctx.drawImage(originalImage, 0, 0);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Simple background removal (white/light backgrounds)
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            
+            if (r > 240 && g > 240 && b > 240) {
+                data[i + 3] = 0;
+            }
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+        
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            previewImage.src = url;
+            processedBlob = blob;
+            hideLoading();
+            showNotification('Background removed successfully', 'success');
+        }, 'image/png');
+    }
+
+    function loadBackgroundImage(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            backgroundImage = new Image();
+            backgroundImage.onload = () => {
+                replaceBackgroundWithImage();
+            };
+            backgroundImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function replaceBackgroundWithColor(color) {
+        if (!originalImage) return;
+        
+        showLoading();
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+        
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(originalImage, 0, 0);
+        
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            previewImage.src = url;
+            processedBlob = blob;
+            hideLoading();
+            showNotification(`Background replaced with ${color}`, 'success');
+        });
+    }
+
+    function replaceBackgroundWithImage() {
+        if (!originalImage || !backgroundImage) return;
+        
+        showLoading();
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+        
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(originalImage, 0, 0);
+        
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            previewImage.src = url;
+            processedBlob = blob;
+            hideLoading();
+            showNotification('Background replaced with image', 'success');
+        });
+    }
+
+    function applyFilters() {
+        if (!previewImage || !previewImage.src) return;
+        
+        const filterString = `
+            brightness(${currentFilters.brightness}%) 
+            contrast(${currentFilters.contrast}%) 
+            saturate(${currentFilters.saturation}%) 
+            blur(${currentFilters.blur}px)
+        `;
+        
+        previewImage.style.filter = filterString;
+    }
+
+    function applyFilterPreset(preset) {
+        switch (preset) {
+            case 'vintage':
+                currentFilters = { brightness: 110, contrast: 120, saturation: 80, blur: 0 };
+                break;
+            case 'bw':
+                currentFilters = { brightness: 100, contrast: 110, saturation: 0, blur: 0 };
+                break;
+            case 'sepia':
+                currentFilters = { brightness: 110, contrast: 90, saturation: 120, blur: 0 };
+                break;
+            case 'reset':
+                currentFilters = { brightness: 100, contrast: 100, saturation: 100, blur: 0 };
+                break;
+        }
+        
+        updateFilterSliders();
+        applyFilters();
+        showNotification(`${preset.charAt(0).toUpperCase() + preset.slice(1)} filter applied`, 'success');
+    }
+
+    function updateFilterSliders() {
+        if (brightnessSlider) {
+            brightnessSlider.value = currentFilters.brightness;
+            document.getElementById('brightnessValue').textContent = currentFilters.brightness + '%';
+        }
+        if (contrastSlider) {
+            contrastSlider.value = currentFilters.contrast;
+            document.getElementById('contrastValue').textContent = currentFilters.contrast + '%';
+        }
+        if (saturationSlider) {
+            saturationSlider.value = currentFilters.saturation;
+            document.getElementById('saturationValue').textContent = currentFilters.saturation + '%';
+        }
+        if (blurSlider) {
+            blurSlider.value = currentFilters.blur;
+            document.getElementById('blurValue').textContent = currentFilters.blur + 'px';
+        }
+    }
+
     function resetEditor() {
-        // Show upload section and hide editor
         const uploadSection = document.getElementById('uploadSection');
         if (uploadSection) uploadSection.style.display = 'block';
         if (editorContainer) editorContainer.style.display = 'none';
         
-        if (previewImage) previewImage.src = '';
+        if (previewImage) {
+            previewImage.src = '';
+            previewImage.style.filter = '';
+            previewImage.style.transform = '';
+        }
         if (widthInput) widthInput.value = '';
         if (heightInput) heightInput.value = '';
         if (originalSizeEl) originalSizeEl.textContent = '';
@@ -521,17 +789,28 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadBtn.disabled = true;
             downloadBtn.classList.add('disabled');
         }
+        
+        // Reset all states
         rotationAngle = 0;
         flipHorizontalState = false;
         flipVerticalState = false;
+        cropEnabled = false;
+        currentFilters = { brightness: 100, contrast: 100, saturation: 100, blur: 0 };
+        backgroundImage = null;
         processedBlob = null;
         originalImage = null;
+        
         if (fileInput) fileInput.value = '';
         
-        // Remove active class from preset buttons
+        // Reset UI elements
         presetButtons.forEach(btn => btn.classList.remove('active'));
+        if (enableCropBtn) {
+            enableCropBtn.classList.remove('active');
+            enableCropBtn.innerHTML = '<i class="fas fa-crop-alt"></i> Enable Crop';
+        }
         
-        // Scroll back to upload section
+        updateFilterSliders();
+        
         if (uploadSection) uploadSection.scrollIntoView({ behavior: 'smooth' });
     }
 
