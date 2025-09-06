@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const selectFileBtn = document.getElementById('selectFileBtn');
+    const getStartedBtn = document.getElementById('getStartedBtn');
     const editorContainer = document.getElementById('editorContainer');
     const previewImage = document.getElementById('previewImage');
     const originalSizeEl = document.getElementById('originalSize');
@@ -98,6 +99,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event Listeners
+    // Get Started button
+    if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', () => {
+            const uploadSection = document.getElementById('uploadSection');
+            if (uploadSection) {
+                uploadSection.style.display = 'block';
+                uploadSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+    
     uploadArea.addEventListener('click', () => fileInput.click());
     
     selectFileBtn.addEventListener('click', (e) => {
@@ -332,6 +344,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (originalSizeEl) originalSizeEl.textContent = `${originalWidth} × ${originalHeight}`;
         if (fileSizeEl) fileSizeEl.textContent = formatFileSize(file.size);
         
+        // Hide upload section and show editor
+        const uploadSection = document.getElementById('uploadSection');
+        if (uploadSection) uploadSection.style.display = 'none';
         if (editorContainer) editorContainer.style.display = 'block';
         updateNewSize();
         
@@ -491,7 +506,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function resetEditor() {
+        // Show upload section and hide editor
+        const uploadSection = document.getElementById('uploadSection');
+        if (uploadSection) uploadSection.style.display = 'block';
         if (editorContainer) editorContainer.style.display = 'none';
+        
         if (previewImage) previewImage.src = '';
         if (widthInput) widthInput.value = '';
         if (heightInput) heightInput.value = '';
@@ -511,6 +530,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove active class from preset buttons
         presetButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Scroll back to upload section
+        if (uploadSection) uploadSection.scrollIntoView({ behavior: 'smooth' });
     }
 
     function formatFileSize(bytes) {

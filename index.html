@@ -9,6 +9,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .hero-btn {
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            margin-top: 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+    </style>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Meta Data for SEO -->
@@ -41,18 +58,22 @@
 
     <!-- Navigation -->
     <nav class="glass-nav">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <i class="fas fa-magic"></i>
-                <span>ImageResizer</span>
-            </div>
-            <div class="nav-controls">
-                <button id="darkModeToggle" class="glass-btn">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
+      <div class="nav-container">
+        <div class="nav-brand">
+          <a href="/" class="brand-link">
+            <img src="/favicon-32x32.png" alt="Logo" width="24" height="24">
+            <span>ImageResizer</span>
+          </a>
         </div>
+        <div class="nav-controls">
+          <button id="darkModeToggle" class="glass-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
     </nav>
+
+
 
     <div class="main-container">
         <!-- Hero Section -->
@@ -63,11 +84,15 @@
                     <span class="hero-subtitle">Image Resizer</span>
                 </h1>
                 <p class="hero-description">Modern image processing with glassmorphism design</p>
+                <button id="getStartedBtn" class="glass-btn primary hero-btn">
+                    <i class="fas fa-rocket"></i>
+                    Get Started Now
+                </button>
             </div>
         </section>
 
         <!-- Upload Section -->
-        <section class="upload-section">
+        <section class="upload-section" id="uploadSection" style="display: none;">
             <div class="glass-card upload-card">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">
@@ -313,13 +338,13 @@
                     <h3>Fully Responsive</h3>
                     <p>Works perfectly on desktop, tablet, and mobile devices</p>
                 </div>
-                <div class="glass-card feature-card">
+                <!--div class="glass-card feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-palette"></i>
                     </div>
                     <h3>Modern Design</h3>
                     <p>Beautiful glassmorphism UI with smooth animations</p>
-                </div>
+                </div-->
             </div>
         </section>
 

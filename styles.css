@@ -1106,27 +1106,149 @@ body {
     }
     
     .glass-card {
-        padding: var(--spacing-md);
+        padding: var(--spacing-sm);
     }
     
     .upload-area {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
     }
     
     .upload-icon {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     
-    .action-grid {
-        grid-template-columns: 1fr 1fr;
+    /* Mobile-friendly Controls Panel */
+    .panel-header {
+        padding-bottom: var(--spacing-xs);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .panel-header h3 {
+        font-size: 1rem;
     }
     
     .tab-navigation {
+        padding: 2px;
+        gap: 2px;
+    }
+    
+    .tab-btn {
+        padding: var(--spacing-xs);
+        font-size: 0.8rem;
         flex-direction: column;
+        gap: 2px;
+    }
+    
+    .tab-btn i {
+        font-size: 0.9rem;
+    }
+    
+    /* Compact Input Groups */
+    .input-group {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .input-group label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+    
+    .glass-input, .glass-select {
+        padding: var(--spacing-xs);
+        font-size: 0.85rem;
+    }
+    
+    /* Compact Preset Grid */
+    .preset-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-xs);
+    }
+    
+    .preset-btn {
+        padding: var(--spacing-xs);
+        gap: 2px;
+    }
+    
+    .preset-btn i {
+        font-size: 1.2rem;
+    }
+    
+    .preset-btn span {
+        font-size: 0.75rem;
+    }
+    
+    .preset-btn small {
+        font-size: 0.65rem;
+    }
+    
+    /* Compact Transform Controls */
+    .transform-controls {
+        gap: var(--spacing-xs);
     }
     
     .control-row {
+        gap: var(--spacing-xs);
+    }
+    
+    .transform-btn {
+        padding: var(--spacing-xs);
+        font-size: 0.8rem;
+    }
+    
+    /* Mobile-friendly Output Settings Panel */
+    .output-panel {
+        margin-top: var(--spacing-sm);
+    }
+    
+    .output-controls {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .output-controls .input-group {
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .output-controls label {
+        font-size: 0.8rem;
+    }
+    
+    .glass-slider {
+        height: 4px;
+        margin: 6px 0;
+    }
+    
+    .glass-slider::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .glass-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+    }
+    
+    /* Mobile-friendly Action Buttons */
+    .actions-panel {
+        margin-top: var(--spacing-sm);
+    }
+    
+    .action-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-xs);
+    }
+    
+    .action-btn {
+        padding: var(--spacing-xs);
+        font-size: 0.75rem;
         flex-direction: column;
+        gap: 2px;
+        min-height: 50px;
+        justify-content: center;
+    }
+    
+    .action-btn i {
+        font-size: 1rem;
     }
     
     .footer-content {
@@ -1138,31 +1260,103 @@ body {
     .steps-container {
         grid-template-columns: 1fr;
     }
-    
-    .preset-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    }
 }
 
 @media (max-width: 480px) {
     .hero-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .section-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .upload-area {
-        padding: var(--spacing-md);
-    }
-    
-    .glass-card {
         padding: var(--spacing-sm);
     }
     
+    .glass-card {
+        padding: 8px;
+    }
+    
+    /* Ultra-compact for small screens */
+    .panel-header h3 {
+        font-size: 0.9rem;
+    }
+    
+    .tab-btn {
+        padding: 4px;
+        font-size: 0.7rem;
+    }
+    
+    .input-group {
+        margin-bottom: 8px;
+    }
+    
+    .input-group label {
+        font-size: 0.75rem;
+    }
+    
+    .glass-input, .glass-select {
+        padding: 6px;
+        font-size: 0.8rem;
+    }
+    
+    .preset-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+    
+    .preset-btn {
+        padding: 6px;
+    }
+    
+    .preset-btn span {
+        font-size: 0.7rem;
+    }
+    
+    .preset-btn small {
+        font-size: 0.6rem;
+    }
+    
+    /* Ultra-compact Output Settings */
+    .output-controls {
+        gap: 8px;
+    }
+    
+    .output-controls .input-group {
+        margin-bottom: 6px;
+    }
+    
+    .glass-slider {
+        height: 3px;
+        margin: 4px 0;
+    }
+    
+    .glass-slider::-webkit-slider-thumb {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .glass-slider::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+    }
+    
+    /* Ultra-compact Action Buttons */
     .action-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+    
+    .action-btn {
+        padding: 8px 4px;
+        font-size: 0.7rem;
+        min-height: 45px;
+    }
+    
+    .action-btn i {
+        font-size: 0.9rem;
     }
     
     .nav-container {
@@ -1171,6 +1365,27 @@ body {
     
     .modal-content {
         margin: var(--spacing-sm);
+    }
+    
+    /* Checkbox wrapper compact */
+    .checkbox-wrapper {
+        margin-top: 8px;
+        gap: 6px;
+    }
+    
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .checkbox-wrapper label {
+        font-size: 0.75rem;
+    }
+    
+    /* Quality value display */
+    #qualityValue {
+        font-weight: 600;
+        color: var(--text-light);
     }
 }
 
