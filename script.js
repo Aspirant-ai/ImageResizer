@@ -469,10 +469,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function downloadImage() {
         if (!processedBlob) return;
         
+        // Generate timestamp
+        const now = new Date();
+        const timestamp = now.getFullYear() + 
+                         String(now.getMonth() + 1).padStart(2, '0') + 
+                         String(now.getDate()).padStart(2, '0') + '_' +
+                         String(now.getHours()).padStart(2, '0') + 
+                         String(now.getMinutes()).padStart(2, '0') + 
+                         String(now.getSeconds()).padStart(2, '0');
+        
         const url = URL.createObjectURL(processedBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `resized-image.${formatSelect ? formatSelect.value : 'jpeg'}`;
+        a.download = `resized-by-img.sscgram.com-${timestamp}.${formatSelect ? formatSelect.value : 'jpeg'}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
