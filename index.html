@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageResizer - Modern Image Processing Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Meta Data for SEO -->
+    <meta name="description" content="ImageResizer - Modern image resizing tool with glassmorphism design. Resize, compress, and optimize images with advanced features.">
+    <meta name="keywords" content="image resizer, photo editor, image compression, glassmorphism, modern design, responsive">
+    <meta name="author" content="ImageResizer">
+    <meta property="og:title" content="ImageResizer - Modern Image Processing">
+    <meta property="og:description" content="Professional image resizing tool with modern glassmorphism design and advanced features.">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-magic"></i>
+                <span>ImageResizer</span>
+            </div>
+            <div class="nav-controls">
+                <button id="darkModeToggle" class="glass-btn">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">PixelPerfect</span>
+                    <span class="hero-subtitle">Image Resizer</span>
+                </h1>
+                <p class="hero-description">Modern image processing with glassmorphism design</p>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="glass-card upload-card">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Your Image</h3>
+                    <p>Drag & drop your image here or click to select</p>
+                    <button id="selectFileBtn" class="glass-btn primary">
+                        <i class="fas fa-folder-open"></i>
+                        Select File
+                    </button>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <div class="supported-formats">
+                        <span>Supports: JPG, PNG, WebP, GIF</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Editor Section -->
+        <section class="editor-section" id="editorContainer" style="display: none;">
+            <div class="editor-grid">
+                <!-- Preview Panel -->
+                <div class="glass-card preview-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-eye"></i> Preview</h3>
+                    </div>
+                    <div class="image-preview">
+                        <img id="previewImage" src="" alt="Preview">
+                        <div class="image-overlay">
+                            <div class="image-info">
+                                <div class="info-item">
+                                    <span class="label">Original:</span>
+                                    <span id="originalSize"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">New:</span>
+                                    <span id="newSize"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Size:</span>
+                                    <span id="fileSize"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Controls Panel -->
+                <div class="glass-card controls-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-sliders-h"></i> Resize Options</h3>
+                    </div>
+                    <div class="tab-navigation">
+                        <button class="tab-btn active" data-tab="custom">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                            Custom
+                        </button>
+                        <button class="tab-btn" data-tab="preset">
+                            <i class="fas fa-th-large"></i>
+                            Presets
+                        </button>
+                        <button class="tab-btn" data-tab="Rotate">
+                            <i class="fas fa-redo"></i>
+                            Transform
+                        </button>
+                    </div>
+                    <div class="tab-content active" id="custom-tab">
+                        <div class="input-group">
+                            <label for="widthInput">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                Width
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="widthInput" min="1" placeholder="Width" class="glass-input">
+                                <select class="glass-select" id="widthUnit">
+                                    <option value="px">px</option>
+                                    <option value="cm">cm</option>
+                                    <option value="inch">inch</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="heightInput">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                Height
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="heightInput" min="1" placeholder="Height" class="glass-input">
+                                <select class="glass-select" id="heightUnit">
+                                    <option value="px">px</option>
+                                    <option value="cm">cm</option>
+                                    <option value="inch">inch</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="maintainAspectRatio" checked>
+                            <label for="maintainAspectRatio">
+                                <i class="fas fa-link"></i>
+                                Maintain aspect ratio
+                            </label>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="preset-tab">
+                        <div class="preset-grid">
+                            <button class="preset-btn" data-width="1920" data-height="1080">
+                                <i class="fas fa-desktop"></i>
+                                <span>Full HD</span>
+                                <small>1920×1080</small>
+                            </button>
+                            <button class="preset-btn" data-width="1280" data-height="720">
+                                <i class="fas fa-tv"></i>
+                                <span>HD</span>
+                                <small>1280×720</small>
+                            </button>
+                            <button class="preset-btn" data-width="1080" data-height="1080">
+                                <i class="fab fa-instagram"></i>
+                                <span>Instagram</span>
+                                <small>1080×1080</small>
+                            </button>
+                            <button class="preset-btn" data-width="1200" data-height="628">
+                                <i class="fab fa-facebook"></i>
+                                <span>Facebook</span>
+                                <small>1200×628</small>
+                            </button>
+                            <button class="preset-btn" data-width="1500" data-height="500">
+                                <i class="fab fa-twitter"></i>
+                                <span>Twitter</span>
+                                <small>1500×500</small>
+                            </button>
+                            <button class="preset-btn" data-width="150" data-height="150">
+                                <i class="fas fa-image"></i>
+                                <span>Thumbnail</span>
+                                <small>150×150</small>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="Rotate-tab">
+                        <div class="transform-controls">
+                            <div class="control-row">
+                                <button id="rotateLeft" class="glass-btn transform-btn">
+                                    <i class="fas fa-undo"></i>
+                                    Rotate Left
+                                </button>
+                                <button id="rotateRight" class="glass-btn transform-btn">
+                                    <i class="fas fa-redo"></i>
+                                    Rotate Right
+                                </button>
+                            </div>
+                            <div class="control-row">
+                                <button id="flipHorizontal" class="glass-btn transform-btn">
+                                    <i class="fas fa-arrows-alt-h"></i>
+                                    Flip H
+                                </button>
+                                <button id="flipVertical" class="glass-btn transform-btn">
+                                    <i class="fas fa-arrows-alt-v"></i>
+                                    Flip V
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Output Settings Panel -->
+                <div class="glass-card output-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-cog"></i> Output Settings</h3>
+                    </div>
+                    <div class="output-controls">
+                        <div class="input-group">
+                            <label for="formatSelect">
+                                <i class="fas fa-file-image"></i>
+                                Format
+                            </label>
+                            <select id="formatSelect" class="glass-select">
+                                <option value="jpeg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                                <option value="gif">GIF</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="qualitySlider">
+                                <i class="fas fa-adjust"></i>
+                                Quality: <span id="qualityValue">90%</span>
+                            </label>
+                            <input type="range" id="qualitySlider" min="1" max="100" value="90" class="glass-slider">
+                        </div>
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div class="glass-card actions-panel">
+                    <div class="action-grid">
+                        <button id="undoBtn" class="glass-btn action-btn disabled" disabled>
+                            <i class="fas fa-undo"></i>
+                            Undo
+                        </button>
+                        <button id="redoBtn" class="glass-btn action-btn disabled" disabled>
+                            <i class="fas fa-redo"></i>
+                            Redo
+                        </button>
+                        <button id="processBtn" class="glass-btn action-btn primary">
+                            <i class="fas fa-magic"></i>
+                            Process
+                        </button>
+                        <button id="downloadBtn" class="glass-btn action-btn success" disabled>
+                            <i class="fas fa-download"></i>
+                            Download
+                        </button>
+                        <button id="resetBtn" class="glass-btn action-btn danger">
+                            <i class="fas fa-refresh"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose PixelPerfect?</h2>
+                <p class="section-subtitle">Modern features with stunning design</p>
+            </div>
+            <div class="features-grid">
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Process images instantly with our optimized algorithms</p>
+                </div>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>All processing happens locally - your images never leave your device</p>
+                </div>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Fully Responsive</h3>
+                    <p>Works perfectly on desktop, tablet, and mobile devices</p>
+                </div>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Modern Design</h3>
+                    <p>Beautiful glassmorphism UI with smooth animations</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works-section">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Simple steps to perfect images</p>
+            </div>
+            <div class="steps-container">
+                <div class="glass-card step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h3>Upload</h3>
+                    <p>Drag & drop or select your image</p>
+                </div>
+                <div class="glass-card step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Customize</h3>
+                    <p>Set dimensions and quality</p>
+                </div>
+                <div class="glass-card step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Process</h3>
+                    <p>Let our engine work its magic</p>
+                </div>
+                <div class="glass-card step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Download</h3>
+                    <p>Get your perfect image</p>
+                </div>
+            </div>
+        </section>
+        <!-- User Guide Modal -->
+        <div class="modal-overlay" id="userGuide">
+            <div class="glass-card modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-book"></i> User Guide</h2>
+                    <button id="closeGuideBtn" class="glass-btn close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="guide-grid">
+                        <div class="guide-item">
+                            <div class="guide-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <h3>Upload Images</h3>
+                            <p>Drag & drop or click to select images. Supports JPEG, PNG, WebP, and GIF formats.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </div>
+                            <h3>Resize Options</h3>
+                            <p>Set custom dimensions or choose from preset sizes. Maintain aspect ratio for best results.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <h3>Output Settings</h3>
+                            <p>Choose format and adjust quality. Higher quality means larger file size.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <h3>Download</h3>
+                            <p>Process your image and download the optimized result instantly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="glass-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-logo">
+                        <i class="fas fa-magic"></i>
+                        <span>PixelPerfect</span>
+                    </div>
+                    <p>Modern image processing with style</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" id="showGuideBtn" class="footer-link">
+                        <i class="fas fa-book"></i>
+                        User Guide
+                    </a>
+                    <a href="#" class="footer-link">
+                        <i class="fas fa-heart"></i>
+                        Support
+                    </a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ImageResizer. Made with ❤️ SSCgram</p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
