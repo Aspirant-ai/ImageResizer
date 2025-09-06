@@ -147,13 +147,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById(`${tabId}-tab`).classList.add('active');
     }
 
-    // Input handlers
+    // Input handlers with live preview
     if (widthInput) {
         widthInput.addEventListener('input', () => {
             if (maintainAspectRatio && maintainAspectRatio.checked && aspectRatio > 0) {
                 heightInput.value = Math.round(widthInput.value / aspectRatio);
             }
             updateNewSize();
+            updateLivePreview();
         });
     }
 
@@ -163,10 +164,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 widthInput.value = Math.round(heightInput.value * aspectRatio);
             }
             updateNewSize();
+            updateLivePreview();
         });
     }
 
-    // Preset buttons
+    // Preset buttons with live preview
     presetButtons.forEach(button => {
         button.addEventListener('click', () => {
             const width = button.getAttribute('data-width');
@@ -180,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
             button.classList.add('active');
             
             updateNewSize();
+            updateLivePreview();
             showNotification(`Preset applied: ${width}×${height}`, 'success');
         });
     });
@@ -196,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rotateLeft.addEventListener('click', () => {
             rotationAngle -= 90;
             if (rotationAngle < 0) rotationAngle = 270;
-            applyTransforms();
+            updateLivePreview();
             showNotification('Rotated left 90°', 'success');
         });
     }
@@ -205,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rotateRight.addEventListener('click', () => {
             rotationAngle += 90;
             if (rotationAngle >= 360) rotationAngle = 0;
-            applyTransforms();
+            updateLivePreview();
             showNotification('Rotated right 90°', 'success');
         });
     }
@@ -213,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (flipHorizontalBtn) {
         flipHorizontalBtn.addEventListener('click', () => {
             flipHorizontalState = !flipHorizontalState;
-            applyTransforms();
+            updateLivePreview();
             showNotification('Flipped horizontally', 'success');
         });
     }
@@ -221,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (flipVerticalBtn) {
         flipVerticalBtn.addEventListener('click', () => {
             flipVerticalState = !flipVerticalState;
-            applyTransforms();
+            updateLivePreview();
             showNotification('Flipped vertically', 'success');
         });
     }
@@ -342,6 +345,49 @@ document.addEventListener('DOMContentLoaded', function() {
             const height = parseInt(heightInput.value) || 0;
             newSizeEl.textContent = `${width} × ${height}`;
         }
+    }
+
+    // Live preview function
+    function updateLivePreview() {
+        if (!originalImage || !previewImage) return;
+        
+        const newWidth = parseInt(widthInput.value) || originalWidth;
+        const newHeight = parseInt(heightInput.value) || originalHeight;
+        
+        // Create temporary canvas for preview
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        
+        // Apply current transformations
+        ctx.save();
+        ctx.translate(newWidth / 2, newHeight / 2);
+        
+        if (rotationAngle !== 0) {
+            ctx.rotate((rotationAngle * Math.PI) / 180);
+        }
+        
+        if (flipHorizontalState) {
+            ctx.scale(-1, 1);
+        }
+        
+        if (flipVerticalState) {
+            ctx.scale(1, -1);
+        }
+        
+        ctx.drawImage(originalImage, -newWidth / 2, -newHeight / 2, newWidth, newHeight);
+        ctx.restore();
+        
+        // Update preview with low quality for performance
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            previewImage.src = url;
+            
+            // Clean up previous URL
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, 'image/jpeg', 0.7);
     }
 
     function applyTransforms() {
